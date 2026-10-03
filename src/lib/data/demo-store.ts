@@ -5,7 +5,7 @@
 import type { Assessment, AssessmentKind, Dataset, Notification, Profile } from "../domain/types";
 import { DEMO_PASSWORD, buildWorld, type World } from "../demo/seed";
 import { visibleTo } from "./visibility";
-import type { NewAssessment, NewPerson, Store } from "./store";
+import { weightsProblem, type NewAssessment, type NewPerson, type Store } from "./store";
 
 const KEY = "esp_demo_world_v1";
 const ACCOUNT = "esp_demo_account";
@@ -220,6 +220,8 @@ export class DemoStore implements Store {
   async updateSchool(patch: Parameters<Store["updateSchool"]>[0]) { this.admin(); Object.assign(this.w.school, patch); this.commit(); }
   async saveWeights(weights: Record<AssessmentKind, number>) {
     this.admin();
+    const problem = weightsProblem(weights);
+    if (problem) throw new Error(problem);
     this.w.weights = (Object.keys(weights) as AssessmentKind[]).map((kind) => ({ school_id: this.w.school.id, kind, weight: Number(weights[kind]) }));
     this.commit();
   }
@@ -248,9 +250,18 @@ export class DemoStore implements Store {
     else this.w.classSubjects.push({ id: uid(), school_id: this.w.school.id, class_id, subject_id, teacher_id });
     this.commit();
   }
+  async setHomeroom(class_id: string, teacher_id: string | null) {
+    this.admin();
+    const c = this.w.classes.find((x) => x.id === class_id);
+    if (c) c.homeroom_teacher_id = teacher_id;
+    this.commit();
+  }
   async addPerson(p: NewPerson) {
     this.admin();
     if (!p.full_name.trim()) throw new Error("Add the person's name.");
+    if (p.role === "admin" && !this.me.is_owner) throw new Error("Only the school owner can add administrators.");
+    if (p.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email)) throw new Error("That email address doesn't look right.");
+    if (p.email && this.w.accounts.some((a) => a.email === p.email!.toLowerCase())) throw new Error("Someone with that email already has a login.");
     const S = this.w.school.id;
     const profile = p.email ? { id: uid(), school_id: S, role: p.role, full_name: p.full_name.trim(), phone: p.phone, preferred_language: "en" as const, is_owner: false, admin_permissions: {} } : null;
     if (profile) this.w.profiles.push(profile);
@@ -262,7 +273,7 @@ export class DemoStore implements Store {
       this.w.parents.push({ id, school_id: S, profile_id: profile?.id ?? null, full_name: p.full_name.trim(), phone: p.phone, email: p.email });
       for (const c of p.child_ids ?? []) this.w.parentStudents.push({ parent_id: id, student_id: c, relationship: "guardian" });
     }
-    if (profile && p.email) this.w.accounts.push({ email: p.email, profile_id: profile.id, role: p.role, label: p.full_name });
+    if (profile && p.email) this.w.accounts.push({ email: p.email.toLowerCase(), profile_id: profile.id, role: p.role, label: p.full_name });
     this.commit();
     return { id, tempPassword: profile ? DEMO_PASSWORD : undefined };
   }

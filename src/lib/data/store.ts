@@ -40,9 +40,18 @@ export interface Store {
   addSubject(name: string, name_am: string | null, code: string | null): Promise<void>;
   addClass(grade_level_id: string, section: string, homeroom_teacher_id: string | null): Promise<string>;
   assignTeacher(class_id: string, subject_id: string, teacher_id: string | null): Promise<void>;
+  setHomeroom(class_id: string, teacher_id: string | null): Promise<void>;
   addPerson(p: NewPerson): Promise<{ id: string; tempPassword?: string }>;
   linkParent(parent_id: string, student_id: string, relationship: "mother" | "father" | "guardian" | "other"): Promise<void>;
   moveStudent(student_id: string, class_id: string | null): Promise<void>;
+}
+
+/** Grading weights must be whole, non-negative and add up to 100. */
+export function weightsProblem(weights: Record<AssessmentKind, number>): string | null {
+  const v = Object.values(weights);
+  if (v.some((x) => !Number.isFinite(x) || x < 0 || x > 100)) return "Each weight must be between 0 and 100.";
+  const total = v.reduce((a, b) => a + b, 0);
+  return Math.abs(total - 100) > 0.001 ? `The weights add up to ${total}%. They must add up to 100%.` : null;
 }
 
 /** A friendly message for any store error (database refusals, network, validation). */
