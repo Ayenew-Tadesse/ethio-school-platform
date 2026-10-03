@@ -87,7 +87,7 @@ export function StudentDashboard() {
           <AssessmentList items={[...overdue, ...todo].slice(0, 6)} empty={t("dash.nothingDue")} showClass={false} />
         </Card>
         <Card title={t("dash.upcomingExams")} action={<SeeAll href="/app/exams" />}>
-          <AssessmentList items={exams.slice(0, 4)} empty={t("dash.noUpcoming")} showClass={false} href={() => "/app/exams"} />
+          <AssessmentList items={exams.slice(0, 4)} empty={t("dash.noUpcoming")} showClass={false} />
         </Card>
       </div>
       <div className="mt-4 grid gap-4 lg:grid-cols-2">

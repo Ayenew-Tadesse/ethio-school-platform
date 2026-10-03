@@ -68,7 +68,7 @@ export function AdminDashboard() {
           </ul>
         </Card>
         <Card title={t("dash.upcomingExams")} action={<SeeAll href="/app/exams" />}>
-          <AssessmentList items={exams} empty={t("dash.noUpcoming")} href={() => "/app/exams"} />
+          <AssessmentList items={exams} empty={t("dash.noUpcoming")} />
         </Card>
       </div>
       <div className="mt-4">

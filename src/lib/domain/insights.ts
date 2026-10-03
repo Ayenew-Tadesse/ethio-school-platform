@@ -47,12 +47,12 @@ export function studentSummary(d: Dataset, studentId: string): StudentSummary | 
   if (!student) return null;
   const w = weightsOf(d.weights);
   const mine = d.assessments.filter((a) => assessmentPlace(d, a).classId === student.class_id);
-  const classmates = d.students.filter((s) => s.class_id === student.class_id);
   const subjectIds = [...new Set(d.classSubjects.filter((cs) => cs.class_id === student.class_id).map((cs) => cs.subject_id))];
   const subjects = subjectIds.map((subjectId) => {
     const set = mine.filter((a) => assessmentPlace(d, a).subjectId === subjectId);
     const b = breakdown(set, d.scores, student.id, w);
-    const classAverage = mean(classmates.map((c) => breakdown(set, d.scores, c.id, w).overall));
+    const cs = d.classSubjects.find((x) => x.class_id === student.class_id && x.subject_id === subjectId);
+    const classAverage = d.classAverages.find((x) => x.class_subject_id === cs?.id)?.average ?? null;
     return { subjectId, overall: b.overall, classAverage, byKind: b.byKind };
   });
   const overall = mean(subjects.map((s) => s.overall));
@@ -118,4 +118,26 @@ export function whoAmI(d: Dataset) {
   const teachingCs = teacher ? d.classSubjects.filter((cs) => cs.teacher_id === teacher.id) : [];
   const teachingClasses = teacher ? [...new Set([...teachingCs.map((cs) => cs.class_id), ...d.classes.filter((c) => c.homeroom_teacher_id === teacher.id).map((c) => c.id)])] : [];
   return { teacher, student, parent, children, teachingCs, teachingClasses };
+}
+
+/** Where one student stands on one piece of work. */
+export type WorkStatus = "graded" | "submitted" | "late" | "missing" | "todo" | "scheduled" | "absent_score";
+export function workStatus(d: Dataset, a: Assessment, studentId: string): WorkStatus {
+  const score = d.scores.find((s) => s.assessment_id === a.id && s.student_id === studentId && (s.released || d.me.role === "teacher" || d.me.role === "admin"));
+  if (score) return "graded";
+  if (!a.takes_submissions) return (a.scheduled_on ?? "") >= todayIso() ? "scheduled" : "absent_score";
+  const sub = d.submissions.find((s) => s.assessment_id === a.id && s.student_id === studentId);
+  if (sub) return sub.is_late ? "late" : "submitted";
+  return a.due_at && a.due_at < new Date().toISOString() ? "missing" : "todo";
+}
+export const STATUS_TONE: Record<WorkStatus, string> = {
+  graded: "badge-good", submitted: "badge-info", late: "badge-warn", missing: "badge-bad", todo: "badge-muted", scheduled: "badge-muted", absent_score: "badge-muted",
+};
+export const studentsIn = (d: Dataset, classId: string | null | undefined) =>
+  d.students.filter((s) => s.class_id === classId).sort((a, b) => a.full_name.localeCompare(b.full_name));
+/** Assessments the signed-in person can act on as a teacher (their class-subjects; all for admins). */
+export function canTeach(d: Dataset, a: Assessment) {
+  if (d.me.role === "admin") return true;
+  const t = d.teachers.find((x) => x.profile_id === d.me.id);
+  return !!t && d.classSubjects.some((cs) => cs.id === a.class_subject_id && cs.teacher_id === t.id);
 }

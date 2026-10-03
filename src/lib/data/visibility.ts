@@ -2,6 +2,7 @@
 // Row Level Security (supabase/migrations/…_security.sql), in code. Tests keep
 // the two in step (visibility.test.ts mirrors tests/db/security.test.sql).
 import type { Dataset, Profile } from "../domain/types";
+import { breakdown, mean, weightsOf } from "../domain/performance";
 import type { World } from "../demo/seed";
 
 export function visibleTo(w: World, profileId: string): Dataset {
@@ -42,8 +43,17 @@ export function visibleTo(w: World, profileId: string): Dataset {
   parents.forEach((p) => add(p.profile_id));
   w.profiles.filter((p) => p.role === "admin").forEach((p) => add(p.id));
   messages.forEach((m) => { add(m.sender_id); add(m.recipient_id); });
+  // Class averages: like public.class_averages(): aggregates only, at least 5 graded students.
+  const weights = weightsOf(w.weights);
+  const classAverages = w.classSubjects
+    .filter((cs) => isAdmin || taughtClasses.has(cs.class_id) || myClasses.has(cs.class_id))
+    .flatMap((cs) => {
+      const set = w.assessments.filter((a) => a.class_subject_id === cs.id);
+      const overalls = w.students.filter((s) => s.class_id === cs.class_id).map((s) => breakdown(set, w.scores, s.id, weights).overall).filter((v) => v != null);
+      return overalls.length >= 5 ? [{ class_subject_id: cs.id, average: mean(overalls)! }] : [];
+    });
   return {
-    school: w.school, me, years: w.years, terms: w.terms, gradeLevels: w.gradeLevels, subjects: w.subjects, weights: w.weights,
+    school: w.school, me, classAverages, years: w.years, terms: w.terms, gradeLevels: w.gradeLevels, subjects: w.subjects, weights: w.weights,
     teachers: w.teachers, classes: w.classes, classSubjects: w.classSubjects, students, parents, parentStudents,
     attendance: w.attendance.filter((a) => sIds.has(a.student_id)),
     assessments,

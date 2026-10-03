@@ -35,7 +35,7 @@ export class SupabaseStore implements Store {
     const me = await this.must<Profile>(this.sb.from("profiles").select("*").eq("id", user.id).single());
     this.me = me;
     const [school, years, terms, gradeLevels, subjects, weights, teachers, classes, students, parents, parentStudents, classSubjects,
-      attendance, assessments, assessmentFiles, submissions, scores, resources, announcements, messages, notifications, people] = await Promise.all([
+      attendance, assessments, assessmentFiles, submissions, scores, resources, announcements, messages, notifications, people, classAverages] = await Promise.all([
       this.must<Dataset["school"]>(this.sb.from("schools").select("*").eq("id", me.school_id).single()),
       all<Dataset["years"][number]>("academic_years"), all<Dataset["terms"][number]>("terms"), all<Dataset["gradeLevels"][number]>("grade_levels"),
       all<Dataset["subjects"][number]>("subjects"), all<Dataset["weights"][number]>("grading_components"), all<Dataset["teachers"][number]>("teachers"),
@@ -49,9 +49,11 @@ export class SupabaseStore implements Store {
       all<Dataset["messages"][number]>("messages", "created_at"),
       this.must<Dataset["notifications"]>(this.sb.from("notifications").select("*").order("created_at", { ascending: false }).limit(200)),
       this.must<Dataset["people"]>(this.sb.rpc("my_people")),
+      this.must<Dataset["classAverages"]>(this.sb.rpc("class_averages")),
     ]);
     return { school, me, years, terms, gradeLevels, subjects, weights, teachers, classes, students, parents, parentStudents, classSubjects,
-      attendance, assessments, assessmentFiles, submissions, scores, resources, announcements, messages, notifications, people };
+      attendance, assessments, assessmentFiles, submissions, scores, resources, announcements, messages, notifications, people,
+      classAverages: classAverages.map((c) => ({ ...c, average: Number(c.average) })) };
   }
   async signOut() { await this.sb.auth.signOut(); }
 

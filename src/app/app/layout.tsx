@@ -2,6 +2,7 @@
 import { AppProvider } from "@/lib/data/app-context";
 import { AppShell } from "@/components/app-shell";
 import { Spinner } from "@/components/ui";
+import { ToastProvider } from "@/components/toast";
 import { useT } from "@/lib/i18n";
 
 function Loading() {
@@ -24,7 +25,7 @@ function Failed({ message, retry }: { message: string; retry: () => void }) {
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <AppProvider fallback={<Loading />} failed={(m, retry) => <Failed message={m} retry={retry} />}>
-      <AppShell>{children}</AppShell>
+      <ToastProvider><AppShell>{children}</AppShell></ToastProvider>
     </AppProvider>
   );
 }

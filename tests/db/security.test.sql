@@ -233,3 +233,32 @@ select pg_temp.back();
 select pg_temp.act_anon();
 select pg_temp.check(pg_temp.refused('select * from my_people()'), 'signed out: no names');
 select pg_temp.back();
+
+/* ------------------------------------------------- class averages (aggregates only) */
+-- Four more 8A students with Math scores, so 8A has 5 graded students; 5B has only Bethel.
+select pg_temp.back();
+insert into students (id, school_id, class_id, full_name) select ('5a000000-0000-0000-0000-00000000010' || i)::uuid, '00000000-0000-0000-0000-00000000000a', 'c1000000-0000-0000-0000-000000000008', 'Classmate ' || i from generate_series(1, 4) i;
+insert into assessments (id, school_id, class_subject_id, kind, title, max_score, published) values
+  ('a5000000-0000-0000-0000-000000000901', '00000000-0000-0000-0000-00000000000a', 'c5000000-0000-0000-0000-000000000001', 'quiz', 'Avg quiz', 10, true),
+  ('a5000000-0000-0000-0000-000000000902', '00000000-0000-0000-0000-00000000000a', 'c5000000-0000-0000-0000-000000000002', 'quiz', 'Bio quiz', 10, true);
+insert into scores (assessment_id, student_id, score) values
+  ('a5000000-0000-0000-0000-000000000901', '5a000000-0000-0000-0000-000000000001', 10),
+  ('a5000000-0000-0000-0000-000000000901', '5a000000-0000-0000-0000-000000000101', 6),
+  ('a5000000-0000-0000-0000-000000000901', '5a000000-0000-0000-0000-000000000102', 6),
+  ('a5000000-0000-0000-0000-000000000901', '5a000000-0000-0000-0000-000000000103', 6),
+  ('a5000000-0000-0000-0000-000000000901', '5a000000-0000-0000-0000-000000000104', 6),
+  ('a5000000-0000-0000-0000-000000000902', '5a000000-0000-0000-0000-000000000002', 9);
+select pg_temp.act_as('a0000000-0000-0000-0000-000000000021');
+select pg_temp.check((select count(*) from class_averages() where class_subject_id = 'c5000000-0000-0000-0000-000000000001') = 1, 'a student gets their class''s average');
+select pg_temp.check((select average from class_averages() where class_subject_id = 'c5000000-0000-0000-0000-000000000001') = 67.0, 'the average is the mean of the students'' weighted results (95, 60, 60, 60, 60 → 67)');
+select pg_temp.check(not exists (select 1 from class_averages() where class_subject_id = 'c5000000-0000-0000-0000-000000000002'), 'a student gets no average for another class');
+select pg_temp.back();
+select pg_temp.act_as('a0000000-0000-0000-0000-000000000031');
+select pg_temp.check(exists (select 1 from class_averages() where class_subject_id = 'c5000000-0000-0000-0000-000000000001'), 'a parent gets their child''s class average');
+select pg_temp.back();
+select pg_temp.act_as('a0000000-0000-0000-0000-000000000012');
+select pg_temp.check(not exists (select 1 from class_averages() where class_subject_id = 'c5000000-0000-0000-0000-000000000002'), 'with fewer than 5 graded students there is no average (no single grade revealed)');
+select pg_temp.back();
+select pg_temp.act_anon();
+select pg_temp.check(pg_temp.refused('select * from class_averages()'), 'signed out: no averages');
+select pg_temp.back();
