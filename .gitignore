@@ -42,3 +42,6 @@ next-env.d.ts
 test-results/
 playwright-report/
 !.env.example
+
+# Portfolio screenshots (scripts/screenshots.mjs output)
+/out/
