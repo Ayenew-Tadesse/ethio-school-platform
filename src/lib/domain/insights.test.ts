@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { buildWorld } from "../demo/seed";
 import { visibleTo } from "../data/visibility";
-import { className, classSummary, schoolStats, studentSummary, upcoming, whoAmI } from "./insights";
+import { className, classSummary, contacts, schoolStats, studentSummary, upcoming, whoAmI } from "./insights";
+import { DemoStore } from "../data/demo-store";
 
 const w = buildWorld();
 const as = (email: string) => visibleTo(w, w.accounts.find((a) => a.email === email)!.profile_id);
@@ -49,5 +50,19 @@ describe("insights", () => {
     expect(me.teachingClasses.length).toBeGreaterThan(0);
     expect(classSummary(d, me.teachingClasses[0]).students).toBeGreaterThan(0);
     expect(upcoming(d, new Set(me.teachingClasses)).length).toBeGreaterThan(0);
+  });
+  it("who may start a conversation matches the demo store's (and database's) rules", () => {
+    const mem = new Map<string, string>();
+    globalThis.localStorage = { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => void mem.set(k, v),
+      removeItem: (k: string) => void mem.delete(k), clear: () => mem.clear(), key: () => null, get length() { return mem.size; } } as Storage;
+    mem.set("esp_demo_world_v1", JSON.stringify(w));
+    for (const email of ["admin@example.com", "teacher@example.com", "selam.teacher@example.com", "student@example.com", "parent@example.com"]) {
+      const d = as(email);
+      const store = new DemoStore(d.me.id);
+      const allowed = new Set(contacts(d).map((p) => p.id));
+      for (const p of d.people) if (p.id !== d.me.id) expect(allowed.has(p.id), `${email} → ${p.full_name}`).toBe(store.canMessage(p.id));
+    }
+    const student = as("student@example.com");
+    expect(contacts(student).every((p) => p.role === "teacher" || student.messages.some((m) => m.sender_id === p.id))).toBe(true);
   });
 });

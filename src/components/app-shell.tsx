@@ -80,6 +80,7 @@ function Notifications() {
               </li>
             ))}
           </ul>
+          <Link href="/app/notifications" onClick={() => setOpen(false)} className="mt-1 block rounded-lg px-2 py-2 text-center text-sm font-semibold text-brand hover:bg-surface-2">{t("nav.seeAllNotifications")}</Link>
         </div>
       )}
     </div>
