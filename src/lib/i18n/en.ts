@@ -1,0 +1,56 @@
+// English: the complete set of interface text. Other languages translate
+// these keys; anything missing falls back to English.
+export const en = {
+  app: { name: "Addis Future Academy", product: "School Platform", tagline: "One school. One platform. One view of student progress." },
+  nav: {
+    dashboard: "Dashboard", students: "Students", teachers: "Teachers", classes: "Classes", subjects: "Subjects", attendance: "Attendance",
+    exams: "Exams", assignments: "Assignments", library: "Library", messages: "Messages", announcements: "Announcements", reports: "Reports",
+    settings: "Settings", myClasses: "My Classes", grades: "Grades", myChildren: "My Children", performance: "Performance", menu: "Menu",
+    notifications: "Notifications", signOut: "Sign out", language: "Language", more: "More",
+  },
+  role: { admin: "Administrator", teacher: "Teacher", student: "Student", parent: "Parent" },
+  common: {
+    loading: "Loading…", save: "Save", cancel: "Cancel", saving: "Saving…", saved: "Saved", add: "Add", edit: "Edit", delete: "Delete", close: "Close",
+    search: "Search", filter: "Filter", all: "All", none: "None", view: "View", back: "Back", submit: "Submit", publish: "Publish",
+    retry: "Try again", error: "Something went wrong.", empty: "Nothing here yet.", today: "Today", due: "Due", score: "Score", average: "Average",
+    of: "of", class: "Class", subject: "Subject", grade: "Grade", student: "Student", teacher: "Teacher", parent: "Parent", date: "Date",
+    status: "Status", title: "Title", description: "Description", noData: "No data yet", seeAll: "See all", yes: "Yes", no: "No", demo: "Demo",
+  },
+  kind: { homework: "Homework", assignment: "Assignment", quiz: "Quiz", midterm: "Midterm exam", final: "Final exam" },
+  att: { present: "Present", absent: "Absent", late: "Late", excused: "Excused", rate: "Attendance rate", markAll: "Mark everyone present",
+    take: "Take attendance", saved: "Attendance saved", editWindow: "You can edit attendance for the last {days} days." },
+  dash: {
+    hello: "Hello, {name}", totalStudents: "Total students", totalTeachers: "Total teachers", attendanceRate: "Attendance rate",
+    completion: "Assignment completion", avgPerformance: "Average performance", attention: "Students requiring academic attention",
+    upcomingExams: "Upcoming exams", recentAnnouncements: "Recent announcements", todayClasses: "Today's classes", upcomingWork: "Upcoming assignments",
+    myProgress: "My progress", subjectPerformance: "Subject performance", classAverage: "Class average", noAttention: "No students need attention right now.",
+    reasonBelow: "Overall score below {threshold}%", reasonDeclining: "Scores dropping ({trend} points)", childOverview: "Overview",
+    homeworkCompletion: "Homework completion", teacherFeedback: "Teacher feedback", classComparison: "Class comparison",
+    last30: "Last 30 days", attendanceTrend: "Attendance, last 30 days", todayCounts: "Today: {present} present · {absent} absent · {late} late",
+    notTakenToday: "Not taken yet today", classLine: "{n} students · avg {avg} · attendance {att}", noUpcoming: "Nothing scheduled.",
+    pinned: "Pinned", teacherSub: "Here's your teaching day.", newAssignment: "New assignment", myClasses: "My classes", homeroom: "Homeroom class", myStudents: "My students",
+    toGrade: "Waiting to be graded", noClasses: "You don't have classes assigned yet.", attendanceDone: "Attendance taken today",
+    attendanceNotYet: "Attendance not taken yet", allGraded: "All caught up: nothing to grade.", late: "Late", classAverages: "Class averages",
+    studentSub: "Here's what's coming up.", myAverage: "My average", toDo: "To do", overdue: "Overdue", nothingDue: "Nothing due. Well done!",
+    recentGrades: "Recent grades", noGrades: "No grades yet.", classAvgShort: "class", markerHint: "The thin line shows the class average.",
+    notLinked: "Your login isn't linked to a student record yet. Please contact the school office.",
+    parentSub: "{name} · {cls}", noChildren: "No children are linked to your account yet. Please contact the school office.",
+    overall: "Overall", upcomingCount: "Upcoming work", recentAbsences: "Absences and late days", perfectAttendance: "No absences recently.",
+    attentionParentTitle: "Worth a conversation:", attentionParentHint: "Their teachers can help: send a message from the Messages tab.",
+  },
+  auth: {
+    signIn: "Sign in", email: "Email", password: "Password", signingIn: "Signing in…", wrong: "Email or password is not correct.",
+    demoTitle: "Explore the demo", demoHint: "Demo accounts with fictional data. Nothing you do here affects a real school.",
+    demoAs: "Continue as {role}", noAccount: "Accounts are created by your school administrator.", resetDemo: "Reset demo data",
+    orSignIn: "or sign in with email", demoOnly: "This site is running as a demo. Use one of the demo accounts above.",
+    demoPasswordHint: "Demo accounts use the password {password}.", offline: "You're offline or the server can't be reached. Please try again.",
+    sidePitch: "Attendance, assignments, grades, the library and messages for leaders, teachers, students and parents.",
+  },
+  shell: {
+    account: "Account", switchAccount: "Switch demo account", skip: "Skip to content", markAllRead: "Mark all as read",
+    noNotifications: "You're all caught up.", demoNote: "Demo school with fictional data. Changes stay in this browser.",
+    notFound: "This page doesn't exist.", comingTitle: "This section is being built.",
+    comingBody: "It's part of the next update. Everything on the dashboard already works with the demo data.",
+  },
+};
+export type Messages = typeof en;

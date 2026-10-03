@@ -216,3 +216,20 @@ select pg_temp.check(pg_temp.refused($$insert into storage.objects (bucket_id, n
   '00000000-0000-0000-0000-00000000000a/a5000000-0000-0000-0000-000000000001/5a000000-0000-0000-0000-000000000001/fake.pdf')$$),
   'a student cannot upload into another student''s folder');
 select pg_temp.back();
+
+/* ------------------------------------------------- names you may see */
+select pg_temp.act_as('a0000000-0000-0000-0000-000000000021');
+select pg_temp.check(exists (select 1 from my_people() where full_name = 'Math Teacher'), 'a student sees their teachers'' names');
+select pg_temp.check(not exists (select 1 from my_people() where full_name = 'Bethel'), 'a student does not see another student''s name');
+select pg_temp.check(not exists (select 1 from my_people() where full_name = 'Abel Mom'), 'a student does not see parents in the people list');
+select pg_temp.check(not exists (select 1 from my_people() where full_name = 'B Admin'), 'no names from another school');
+select pg_temp.back();
+select pg_temp.act_as('a0000000-0000-0000-0000-000000000012');
+select pg_temp.check(not exists (select 1 from my_people() where full_name in ('Abel', 'Abel Mom')), 'a teacher does not see students or parents of classes they don''t teach');
+select pg_temp.back();
+select pg_temp.act_as('a0000000-0000-0000-0000-000000000011');
+select pg_temp.check((select count(*) from my_people() where full_name in ('Abel', 'Abel Mom')) = 2, 'a teacher sees their students and those students'' parents');
+select pg_temp.back();
+select pg_temp.act_anon();
+select pg_temp.check(pg_temp.refused('select * from my_people()'), 'signed out: no names');
+select pg_temp.back();
