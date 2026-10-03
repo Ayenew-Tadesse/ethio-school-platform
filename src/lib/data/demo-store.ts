@@ -30,6 +30,7 @@ export const setDemoAccount = (profileId: string | null) => {
 };
 // Files in the demo stay in memory for this visit (shown as links while the tab is open).
 const files = new Map<string, string>();
+const esc = (v: string) => v.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
 const keep = (file: File) => { const path = `demo/${uid()}/${file.name}`; files.set(path, URL.createObjectURL(file)); return { path, name: file.name, size: file.size }; };
 
 export class DemoStore implements Store {
@@ -147,7 +148,17 @@ export class DemoStore implements Store {
     this.commit();
   }
 
-  async fileUrl(_bucket: "materials" | "submissions", path: string) { return files.get(path) ?? null; }
+  async fileUrl(_bucket: "materials" | "submissions", path: string) {
+    const kept = files.get(path);
+    if (kept) return kept;
+    // Library items that come with the demo school: a short sample page stands in for the real file.
+    const r = this.w.resources.find((x) => x.file_path === path);
+    if (!r) return null;
+    const html = `<!doctype html><meta charset="utf-8"><title>${esc(r.title)}</title><body style="font:16px/1.6 system-ui;max-width:40rem;margin:3rem auto;padding:0 1rem">`
+      + `<p style="color:#5b6a62">Sample document · demo school</p><h1>${esc(r.title)}</h1><p>${esc(r.description ?? "")}</p>`
+      + `<p style="color:#5b6a62">In a real school this is the file the teacher uploaded.</p></body>`;
+    return URL.createObjectURL(new Blob([html], { type: "text/html" }));
+  }
 
   async sendMessage(to: string, body: string, studentId?: string | null) {
     const text = body.trim();

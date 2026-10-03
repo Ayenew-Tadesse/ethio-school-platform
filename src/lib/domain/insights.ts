@@ -141,3 +141,34 @@ export function canTeach(d: Dataset, a: Assessment) {
   const t = d.teachers.find((x) => x.profile_id === d.me.id);
   return !!t && d.classSubjects.some((cs) => cs.id === a.class_subject_id && cs.teacher_id === t.id);
 }
+
+/**
+ * People the signed-in person may start a conversation with, by the school's
+ * messaging rules (the same as private.can_message in the database, which has
+ * the final say). Anyone who has written to you can always be answered.
+ */
+export function contacts(d: Dataset): Dataset["people"] {
+  const me = d.me, rules = d.school.messaging;
+  const who = whoAmI(d);
+  const classesOfTeacher = (profileId: string) => {
+    const t = d.teachers.find((x) => x.profile_id === profileId);
+    if (!t) return new Set<string>();
+    return new Set([...d.classSubjects.filter((cs) => cs.teacher_id === t.id).map((cs) => cs.class_id), ...d.classes.filter((c) => c.homeroom_teacher_id === t.id).map((c) => c.id)]);
+  };
+  const childClassesOfParent = (profileId: string) => {
+    const p = d.parents.find((x) => x.profile_id === profileId);
+    return d.parentStudents.filter((l) => l.parent_id === p?.id).map((l) => d.students.find((s) => s.id === l.student_id)?.class_id).filter(Boolean) as string[];
+  };
+  const mine = new Set(who.teachingClasses);
+  const repliers = new Set(d.messages.filter((m) => m.recipient_id === me.id).map((m) => m.sender_id));
+  return d.people.filter((p) => {
+    if (p.id === me.id) return false;
+    if (repliers.has(p.id) || me.role === "admin") return true;
+    if (p.role === "admin") return me.role === "teacher" || me.role === "parent";
+    if (me.role === "parent" && p.role === "teacher") { const c = classesOfTeacher(p.id); return rules.parent_teacher && who.children.some((k) => k.class_id && c.has(k.class_id)); }
+    if (me.role === "teacher" && p.role === "parent") return rules.teacher_parent && childClassesOfParent(p.id).some((c) => mine.has(c));
+    if (me.role === "teacher" && p.role === "student") { const c = d.students.find((s) => s.profile_id === p.id)?.class_id; return rules.teacher_student && !!c && mine.has(c); }
+    if (me.role === "student" && p.role === "teacher") return rules.student_teacher && !!who.student?.class_id && classesOfTeacher(p.id).has(who.student.class_id);
+    return false;
+  }).sort((a, b) => a.full_name.localeCompare(b.full_name));
+}
