@@ -211,8 +211,9 @@ export function buildWorld(today = iso(new Date())): World {
       }
     });
     // Coming up: homework due in a few days (open for submissions) and a quiz next week.
+    const openHw = id("as");
     assessments.push({
-      id: id("as"), school_id: S, class_subject_id: cs.id, term_id: termFor(today), kind: "homework",
+      id: openHw, school_id: S, class_subject_id: cs.id, term_id: termFor(today), kind: "homework",
       title: `${titles[3]}: practice set`, description: `Complete the practice set on ${titles[3].toLowerCase()}. Show your working.`,
       due_at: `${addDays(today, 3)}T17:00:00.000Z`, scheduled_on: null, max_score: 10, published: true, published_at: now, takes_submissions: true, allow_resubmit: true, created_at: now,
     }, {
@@ -220,6 +221,10 @@ export function buildWorld(today = iso(new Date())): World {
       title: `${titles[4]} quiz`, description: "Short quiz in class.", due_at: null, scheduled_on: addDays(today, 7), max_score: 20, published: true, published_at: now,
       takes_submissions: false, allow_resubmit: false, created_at: now,
     });
+    // Some of the class has already handed it in (waiting to be graded); the demo student hasn't yet.
+    for (const st of pupils) if (st.id !== students[0].id && r() < 0.4)
+      submissions.push({ id: id("sb"), assessment_id: openHw, student_id: st.id, body: "Here is my practice set. I showed my working for each question.",
+        files: [], attempt: 1, submitted_at: `${today}T07:30:00.000Z`, is_late: false });
   }
 
   const resources: Resource[] = [];

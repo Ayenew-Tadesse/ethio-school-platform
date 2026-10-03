@@ -74,6 +74,8 @@ export interface Dataset {
   teachers: Teacher[]; classes: ClassRow[]; students: Student[]; parents: Parent[]; parentStudents: ParentStudent[];
   classSubjects: ClassSubject[]; attendance: Attendance[]; assessments: Assessment[]; assessmentFiles: AssessmentFile[]; submissions: Submission[]; scores: Score[];
   resources: Resource[]; announcements: Announcement[]; messages: Message[]; notifications: Notification[];
+  /** Class averages (aggregates only, classes you belong to; none for fewer than 5 graded students). */
+  classAverages: { class_subject_id: string; average: number }[];
   /** Names of people you can see (profile id → name and role), for messages and authors. */
   people: { id: string; full_name: string; role: Role }[];
 }

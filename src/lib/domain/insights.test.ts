@@ -25,6 +25,18 @@ describe("insights", () => {
     expect(sum.subjects.length).toBeGreaterThan(3);
     expect(sum.subjects.every((x) => x.overall != null && x.classAverage != null)).toBe(true);
   });
+  it("a student gets the real class average without seeing classmates' grades", () => {
+    const d = as("student@example.com");
+    const me = whoAmI(d).student!;
+    expect(d.scores.every((s) => s.student_id === me.id)).toBe(true);
+    const admin = as("admin@example.com");
+    const sum = studentSummary(d, me.id)!;
+    for (const sub of sum.subjects) {
+      const cs = d.classSubjects.find((c) => c.class_id === me.class_id && c.subject_id === sub.subjectId)!;
+      expect(sub.classAverage).toBe(admin.classAverages.find((c) => c.class_subject_id === cs.id)!.average);
+    }
+    expect(sum.subjects.some((s) => s.classAverage !== s.overall)).toBe(true);
+  });
   it("a parent sees summaries for their children only", () => {
     const d = as("parent@example.com");
     const kids = whoAmI(d).children;
