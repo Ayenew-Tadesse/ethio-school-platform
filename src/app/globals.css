@@ -1,26 +1,119 @@
 @import "tailwindcss";
 
+/* Design tokens: calm, trustworthy, readable on cheap phones in bright light.
+   Deep green (growth) with a warm gold accent; generous contrast. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #f6f7f5;
+  --surface: #ffffff;
+  --surface-2: #eef2ef;
+  --line: #dde3df;
+  --text: #17211c;
+  --muted: #5b6a62;
+  --brand: #0f6b4c;
+  --brand-strong: #0a5038;
+  --brand-soft: #e3f1ea;
+  --on-brand: #ffffff;
+  --accent: #c98a12;
+  --accent-soft: #fbf1dc;
+  --good: #1f7a4d;
+  --warn: #a86400;
+  --warn-soft: #fdf0dc;
+  --bad: #b3261e;
+  --bad-soft: #fbe6e4;
+  --info: #1d5fa8;
+  --info-soft: #e4eef9;
+  --radius: 14px;
+  --shadow: 0 1px 2px rgb(16 24 20 / 0.06), 0 4px 16px rgb(16 24 20 / 0.05);
+  color-scheme: light;
 }
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg: #0f1412;
+    --surface: #161d1a;
+    --surface-2: #1d2622;
+    --line: #2a3530;
+    --text: #e8eeea;
+    --muted: #9db0a6;
+    --brand: #3fb488;
+    --brand-strong: #63c99f;
+    --brand-soft: #173328;
+    --on-brand: #06140e;
+    --accent: #e3a93a;
+    --accent-soft: #33280f;
+    --good: #5cc592;
+    --warn: #f0ae4a;
+    --warn-soft: #34260e;
+    --bad: #f2867d;
+    --bad-soft: #3a1a18;
+    --info: #78aef0;
+    --info-soft: #172a40;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4);
+    color-scheme: dark;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-soft: var(--brand-soft);
+  --color-on-brand: var(--on-brand);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-good: var(--good);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  /* System fonts: fast everywhere; Ethiopic script falls back to Noto Sans Ethiopic / Nyala where installed. */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Noto Sans Ethiopic", "Nyala", "Abyssinica SIL", sans-serif;
 }
+
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+}
+:lang(am) body { line-height: 1.65; }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 6px; }
+::selection { background: var(--brand-soft); }
+
+@layer components {
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 44px; padding: 0 1rem;
+    border-radius: 10px; font-weight: 600; font-size: .95rem; border: 1px solid transparent; transition: background .15s, border-color .15s;
+    cursor: pointer; white-space: nowrap; text-decoration: none;
+  }
+  .btn:disabled { opacity: .55; cursor: not-allowed; }
+  .btn-primary { background: var(--brand); color: var(--on-brand); }
+  .btn-primary:hover:not(:disabled) { background: var(--brand-strong); }
+  .btn-ghost { background: transparent; color: var(--text); border-color: var(--line); }
+  .btn-ghost:hover:not(:disabled) { background: var(--surface-2); }
+  .btn-sm { min-height: 36px; padding: 0 .75rem; font-size: .875rem; }
+  .input {
+    width: 100%; min-height: 44px; padding: .5rem .75rem; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--text); font-size: 1rem;
+  }
+  .input:focus { outline: 2px solid var(--brand); outline-offset: 0; border-color: transparent; }
+  .label { display: block; font-size: .875rem; font-weight: 600; margin-bottom: .35rem; }
+  .badge { display: inline-flex; align-items: center; gap: .25rem; padding: .1rem .55rem; border-radius: 999px; font-size: .75rem; font-weight: 600; white-space: nowrap; }
+  .badge-good { background: var(--brand-soft); color: var(--good); }
+  .badge-warn { background: var(--warn-soft); color: var(--warn); }
+  .badge-bad { background: var(--bad-soft); color: var(--bad); }
+  .badge-info { background: var(--info-soft); color: var(--info); }
+  .badge-muted { background: var(--surface-2); color: var(--muted); }
+  .muted { color: var(--muted); }
+  .skeleton { background: linear-gradient(90deg, var(--surface-2), var(--line), var(--surface-2)); background-size: 200% 100%; animation: sk 1.2s infinite; border-radius: 8px; }
+}
+@keyframes sk { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
