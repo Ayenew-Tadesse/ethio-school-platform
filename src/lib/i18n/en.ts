@@ -47,7 +47,7 @@ export const en = {
     saveDraft: "Save as draft", create: "Create", created: "Created", published: "Published", publish: "Publish", publishHint: "Students can't see drafts.",
     submittedCount: "{n} of {total} submitted", gradedCount: "{n} of {total} graded", due: "Due {date}", on: "On {date}",
     yourWork: "Your work", answerPh: "Write your answer or a note to your teacher…", addFiles: "Add files", submit: "Submit",
-    resubmit: "Submit again", submittedAt: "Submitted {date}", attempt: "Attempt {n}", yourGrade: "Your grade", feedback: "Feedback",
+    resubmit: "Submit again", submittedAt: "Submitted {date}", attempt: "Attempt {n}", yourGrade: "Your grade", grade: "Grade", feedback: "Feedback",
     feedbackPh: "Feedback for the student (optional)", noSubmission: "No submission", gradeSheet: "Grades", save: "Save", saveAll: "Save all grades",
     savedGrades: "Grades saved. Students and parents are notified.", closed: "Submissions are closed: this work has been graded.",
     notOpen: "This work doesn't take online submissions.", attachments: "Attachments", fileGone: "This demo file was uploaded in another visit and is no longer available.",

@@ -150,7 +150,7 @@ function GradeSheet({ a }: { a: Assessment }) {
 }
 
 /** A grade and feedback, if released. */
-function GradeBox({ a, student }: { a: Assessment; student: Student }) {
+function GradeBox({ a, student, label }: { a: Assessment; student: Student; label?: string }) {
   const { data } = useApp();
   const { t } = useI18n();
   const s = data.scores.find((x) => x.assessment_id === a.id && x.student_id === student.id && x.released);
@@ -159,7 +159,7 @@ function GradeBox({ a, student }: { a: Assessment; student: Student }) {
   return (
     <div className="rounded-xl border border-line bg-surface-2 p-4">
       <div className="flex items-center justify-between gap-3">
-        <span className="text-sm font-semibold">{t("work.yourGrade")}</span>
+        <span className="text-sm font-semibold">{label ?? t("work.yourGrade")}</span>
         <span className={`text-2xl font-bold tabular-nums ${p >= 75 ? "text-good" : p >= data.school.passing_score ? "text-warn" : "text-bad"}`}>{Number(s.score)} / {Number(a.max_score)}</span>
       </div>
       {s.feedback && <p className="mt-2 text-sm"><span className="muted">{t("work.feedback")}:</span> “{s.feedback}”</p>}
@@ -226,6 +226,7 @@ function ParentPanel({ a }: { a: Assessment }) {
   const { data } = useApp();
   const { t } = useI18n();
   const pick = useChild();
+  const f = useFmt();
   const inClass = pick.kids.filter((k) => k.class_id === assessmentPlace(data, a).classId);
   const child = inClass.find((k) => k.id === pick.child?.id) ?? inClass[0];
   if (!child) return <Empty text={t("work.nothing")} />;
@@ -236,8 +237,8 @@ function ParentPanel({ a }: { a: Assessment }) {
       {inClass.length > 1 && <ChildPicker {...pick} kids={inClass} />}
       <Card title={t("work.childWork", { name: child.full_name.split(" ")[0] })} action={<span className={`badge ${STATUS_TONE[status]}`}>{t(`work.${status}`)}</span>}>
         <div className="space-y-3">
-          <GradeBox a={a} student={child} />
-          {sub && <p className="muted text-sm">{t("work.submittedAt", { date: new Date(sub.submitted_at).toLocaleString() })}</p>}
+          <GradeBox a={a} student={child} label={t("work.grade")} />
+          {sub && <p className="muted text-sm">{t("work.submittedAt", { date: f.dateTime(sub.submitted_at) })}</p>}
         </div>
       </Card>
     </>
