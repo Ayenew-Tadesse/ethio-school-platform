@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { DemoStore, loadWorld, resetDemo } from "./demo-store";
+import { weightsProblem } from "./store";
 
 // A tiny localStorage for Node (the demo store keeps its school there).
 const mem = new Map<string, string>();
@@ -71,5 +72,25 @@ describe("demo store: the homework story", () => {
     expect(d2.students.find((s) => s.id === id)?.class_id).toBe(classId);
     expect(tempPassword).toBeTruthy();
     await expect(admin.addClass(g8.id, "C", null)).rejects.toThrow(/already exists/);
+  });
+
+  it("grading weights must add up to 100, and only admins change them", async () => {
+    expect(weightsProblem({ homework: 10, assignment: 20, quiz: 20, midterm: 20, final: 30 })).toBeNull();
+    expect(weightsProblem({ homework: 10, assignment: 20, quiz: 20, midterm: 20, final: 20 })).toMatch(/90%/);
+    expect(weightsProblem({ homework: -5, assignment: 25, quiz: 20, midterm: 30, final: 30 })).toMatch(/between 0 and 100/);
+    const admin = as("admin@example.com");
+    await expect(admin.saveWeights({ homework: 50, assignment: 0, quiz: 0, midterm: 0, final: 0 })).rejects.toThrow(/100%/);
+    await admin.saveWeights({ homework: 0, assignment: 0, quiz: 0, midterm: 50, final: 50 });
+    expect((await admin.load()).weights.find((w) => w.kind === "midterm")?.weight).toBe(50);
+    await expect(as("teacher@example.com").saveWeights({ homework: 10, assignment: 20, quiz: 20, midterm: 20, final: 30 })).rejects.toThrow(/permission/);
+  });
+
+  it("an admin sets the homeroom teacher; duplicate emails are refused", async () => {
+    const admin = as("admin@example.com");
+    const d = await admin.load();
+    await admin.setHomeroom(d.classes[0].id, d.teachers[4].id);
+    expect((await admin.load()).classes[0].homeroom_teacher_id).toBe(d.teachers[4].id);
+    await expect(admin.addPerson({ role: "teacher", full_name: "Copy", email: "Teacher@Example.com", phone: null })).rejects.toThrow(/already has a login/);
+    await expect(as("student@example.com").setHomeroom(d.classes[0].id, null)).rejects.toThrow(/permission/);
   });
 });

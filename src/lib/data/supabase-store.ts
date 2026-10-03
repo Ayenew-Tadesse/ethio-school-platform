@@ -6,7 +6,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Assessment, AssessmentKind, Dataset, Profile } from "../domain/types";
 import { supabase } from "../supabase/client";
-import type { NewAssessment, NewPerson, Store } from "./store";
+import { weightsProblem, type NewAssessment, type NewPerson, type Store } from "./store";
 
 const safeName = (n: string) => n.replace(/[^\w.\- ]+/g, "_").slice(-80);
 const rnd = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}`);
@@ -127,6 +127,8 @@ export class SupabaseStore implements Store {
   // ---- administrators (RLS checks the permission; these just send the change)
   async updateSchool(patch: Parameters<Store["updateSchool"]>[0]) { await this.must(this.sb.from("schools").update(patch).eq("id", this.schoolId).select("id").single()); }
   async saveWeights(weights: Record<AssessmentKind, number>) {
+    const problem = weightsProblem(weights);
+    if (problem) throw new Error(problem);
     await this.must(this.sb.from("grading_components").upsert((Object.keys(weights) as AssessmentKind[]).map((kind) => ({ school_id: this.schoolId, kind, weight: weights[kind] }))));
   }
   async addSubject(name: string, name_am: string | null, code: string | null) {
@@ -140,6 +142,9 @@ export class SupabaseStore implements Store {
   }
   async assignTeacher(class_id: string, subject_id: string, teacher_id: string | null) {
     await this.must(this.sb.from("class_subjects").upsert({ school_id: this.schoolId, class_id, subject_id, teacher_id }, { onConflict: "class_id,subject_id" }));
+  }
+  async setHomeroom(class_id: string, teacher_id: string | null) {
+    await this.must(this.sb.from("classes").update({ homeroom_teacher_id: teacher_id }).eq("id", class_id).select("id").single());
   }
   async addPerson(p: NewPerson) {
     const { data: { session } } = await this.sb.auth.getSession();
