@@ -1,0 +1,117 @@
+{
+  "app": "Ethio School Platform",
+  "devices": {
+    "tablet": "1180x820",
+    "computer": "1440x900",
+    "phone": "390x844"
+  },
+  "taken_at": "2026-10-04T20:43:15.291Z",
+  "commit": "af21346e7fe8c5dfce3560a9b89f73bb817a5522",
+  "shots": [
+    {
+      "device": "tablet",
+      "file": "tablet/landing.jpg",
+      "label": "Landing page"
+    },
+    {
+      "device": "tablet",
+      "file": "tablet/admin-dashboard.jpg",
+      "label": "Administrator dashboard"
+    },
+    {
+      "device": "tablet",
+      "file": "tablet/reports.jpg",
+      "label": "Reports"
+    },
+    {
+      "device": "tablet",
+      "file": "tablet/flow-1-post.jpg",
+      "label": "Teacher posts homework"
+    },
+    {
+      "device": "tablet",
+      "file": "tablet/flow-2-submit.jpg",
+      "label": "Student submits"
+    },
+    {
+      "device": "tablet",
+      "file": "tablet/flow-3-grade.jpg",
+      "label": "Teacher grades with feedback"
+    },
+    {
+      "device": "tablet",
+      "file": "tablet/flow-4-parent.jpg",
+      "label": "Parent sees the grade"
+    },
+    {
+      "device": "computer",
+      "file": "computer/landing.jpg",
+      "label": "Landing page"
+    },
+    {
+      "device": "computer",
+      "file": "computer/admin-dashboard.jpg",
+      "label": "Administrator dashboard"
+    },
+    {
+      "device": "computer",
+      "file": "computer/reports.jpg",
+      "label": "Reports"
+    },
+    {
+      "device": "computer",
+      "file": "computer/flow-1-post.jpg",
+      "label": "Teacher posts homework"
+    },
+    {
+      "device": "computer",
+      "file": "computer/flow-2-submit.jpg",
+      "label": "Student submits"
+    },
+    {
+      "device": "computer",
+      "file": "computer/flow-3-grade.jpg",
+      "label": "Teacher grades with feedback"
+    },
+    {
+      "device": "computer",
+      "file": "computer/flow-4-parent.jpg",
+      "label": "Parent sees the grade"
+    },
+    {
+      "device": "phone",
+      "file": "phone/landing.jpg",
+      "label": "Landing page"
+    },
+    {
+      "device": "phone",
+      "file": "phone/admin-dashboard.jpg",
+      "label": "Administrator dashboard"
+    },
+    {
+      "device": "phone",
+      "file": "phone/reports.jpg",
+      "label": "Reports"
+    },
+    {
+      "device": "phone",
+      "file": "phone/flow-1-post.jpg",
+      "label": "Teacher posts homework"
+    },
+    {
+      "device": "phone",
+      "file": "phone/flow-2-submit.jpg",
+      "label": "Student submits"
+    },
+    {
+      "device": "phone",
+      "file": "phone/flow-3-grade.jpg",
+      "label": "Teacher grades with feedback"
+    },
+    {
+      "device": "phone",
+      "file": "phone/flow-4-parent.jpg",
+      "label": "Parent sees the grade"
+    }
+  ]
+}
