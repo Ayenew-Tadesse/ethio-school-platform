@@ -13,4 +13,11 @@ for test in tests/db/*.test.sql; do
   for f in supabase/migrations/*.sql; do "${PSQL[@]}" -d "$DB" -f "$f"; done
   PGOPTIONS="" "${PSQL[@]}" -d "$DB" -f "$test" 2>&1 >/dev/null | sed -n "s/.*NOTICE:  //p; /ERROR/p"
 done
+# The seed: load the demo school (npm run seed's SQL, with stand-in logins), then check it.
+echo "== tests/db/seed.check.sql"
+"${PSQL[@]}" -d postgres -c "drop database if exists $DB" -c "create database $DB"
+"${PSQL[@]}" -d "$DB" -f tests/db/supabase-stub.sql
+for f in supabase/migrations/*.sql; do "${PSQL[@]}" -d "$DB" -f "$f"; done
+npx tsx tests/db/seed-sql.ts | "${PSQL[@]}" -d "$DB"
+PGOPTIONS="" "${PSQL[@]}" -d "$DB" -f tests/db/seed.check.sql 2>&1 >/dev/null | sed -n "s/.*NOTICE:  //p; /ERROR/p"
 echo "Database tests passed."

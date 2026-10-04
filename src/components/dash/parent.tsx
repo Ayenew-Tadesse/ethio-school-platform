@@ -67,7 +67,7 @@ export function ParentDashboard() {
         <Card title={t("dash.upcomingWork")} className="lg:col-span-2" action={<SeeAll href="/app/assignments" />}>
           <AssessmentList items={work} empty={t("dash.noUpcoming")} showClass={false} />
         </Card>
-        <Card title={t("dash.recentAbsences")} action={<SeeAll href="/app/attendance" />}>
+        <Card title={t("dash.recentAbsences")} action={<SeeAll href="/app/attendance" />} tour="child-attendance">
           {absences.length === 0 ? <Empty text={t("dash.perfectAttendance")} icon="check" /> : (
             <ul className="divide-y divide-line">
               {absences.map((a) => (

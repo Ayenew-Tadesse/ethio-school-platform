@@ -11,6 +11,7 @@ import { DEMO_PASSWORD } from "@/lib/demo/seed";
 import type { Role } from "@/lib/domain/types";
 import { LOCALES, useI18n } from "@/lib/i18n";
 import { supabaseConfigured } from "@/lib/supabase/config";
+import { TOUR_ACCOUNTS, setTourStop } from "@/lib/demo/tour";
 
 const DEMO: { email: string; role: Role; icon: IconName }[] = [
   { email: "admin@example.com", role: "admin", icon: "settings" },
@@ -76,7 +77,11 @@ export default function Login() {
         <div className="mx-auto w-full max-w-md flex-1 py-8">
           <h1 className="text-2xl font-bold">{t("auth.demoTitle")}</h1>
           <p className="muted mt-1 text-sm">{t("auth.demoHint")}</p>
-          <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
+          <button type="button" className="btn btn-primary mt-4 w-full" disabled={!!busy} data-tour-start
+            onClick={() => { setTourStop(0); enterDemo(TOUR_ACCOUNTS.admin); }}>
+            <Icon name="arrow" size={18} />{t("tour.start")}
+          </button>
+          <ul className="mt-3 grid gap-2.5 sm:grid-cols-2">
             {DEMO.map((d) => (
               <li key={d.email}>
                 <button type="button" onClick={() => enterDemo(d.email)} disabled={!!busy}

@@ -26,6 +26,8 @@ With no Supabase settings the site runs as a **demo in your browser**: open
 | Parent | parent@example.com | `Demo@2026` |
 
 Demo changes stay in that browser; **Reset demo data** starts over.
+**Take a guided tour** on the sign-in page walks through ten stops across the
+four roles.
 
 ## How it fits together
 
@@ -52,12 +54,17 @@ Demo changes stay in that browser; **Reset demo data** starts over.
 ## Tests
 
 ```bash
-npm test             # unit tests (grading, insights, demo rules, i18n)
-npm run test:db      # database security tests (needs local PostgreSQL 15+)
+npm test             # unit tests (grading, insights, demo rules, Amharic coverage)
+npm run test:db      # database security tests and the demo seed (needs local PostgreSQL 15+)
 npm run test:e2e     # browser tests at 375/390/412/768/1280 px widths
 ```
 
-## Configuration
+## Documentation
 
-Copy `.env.example` to `.env.local`. Full setup, deployment and the demo script
-are documented as the remaining milestones land.
+- [Running it on your computer](docs/setup.md)
+- [Who can see what (security model)](docs/security.md)
+- [Putting it online: Vercel + Supabase](docs/deploy.md), including loading the
+  demo school into a real project with `npm run seed`
+- [Adding a real school](docs/adding-a-school.md)
+- [Showing it to a school in 10 minutes](docs/demo-script.md)
+- [Translations](docs/translations.md) (the Amharic needs a native speaker's review)

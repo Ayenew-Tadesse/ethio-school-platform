@@ -53,7 +53,7 @@ export function TeacherDashboard() {
             </ul>
           )}
         </Card>
-        <Card title={t("dash.toGrade")} action={<SeeAll href="/app/grades" />}>
+        <Card title={t("dash.toGrade")} action={<SeeAll href="/app/grades" />} tour="to-grade">
           {toGrade.length === 0 ? <Empty text={t("dash.allGraded")} icon="check" /> : (
             <ul className="divide-y divide-line">
               {toGrade.slice(0, 5).map((s) => {

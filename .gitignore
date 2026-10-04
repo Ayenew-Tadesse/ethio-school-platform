@@ -45,3 +45,6 @@ playwright-report/
 
 # Portfolio screenshots (scripts/screenshots.mjs output)
 /out/
+
+# The demo school SQL made by npm run seed (has the demo logins' ids)
+/supabase/seed/
