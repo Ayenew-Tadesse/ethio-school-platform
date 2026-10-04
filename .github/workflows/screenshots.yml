@@ -1,7 +1,8 @@
 # Portfolio screenshots: after every change to main, photograph the app as it
 # is now and publish the pictures on the "screenshots" branch, at the same
 # addresses every time:
-#   https://raw.githubusercontent.com/<owner>/<repo>/screenshots/tablet/<name>.jpg
+#   https://raw.githubusercontent.com/<owner>/<repo>/screenshots/<device>/<name>.jpg
+# where <device> is tablet, computer or phone.
 # A portfolio case study that links to them always shows the current app.
 # If a run fails, the previous pictures stay published.
 name: Portfolio screenshots
