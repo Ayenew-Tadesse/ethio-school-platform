@@ -56,7 +56,7 @@ function Sheet({ classId, date }: { classId: string; date: string }) {
           </button>
         )}
       </div>
-      <ul className="card divide-y divide-line">
+      <ul className="card divide-y divide-line" data-tour="roster">
         {students.map((s) => {
           const row = rows[s.id] ?? { status: null, note: "" };
           return (

@@ -16,7 +16,7 @@ export default function Teachers() {
   const teachers = [...data.teachers].sort((a, b) => a.full_name.localeCompare(b.full_name));
   return (
     <>
-      <PageHeader title={t("nav.teachers")} action={<button type="button" className="btn btn-primary btn-sm" onClick={() => setAdding(true)}><Icon name="plus" size={18} />{t("admin.addTeacher")}</button>} />
+      <PageHeader title={t("nav.teachers")} action={<button type="button" className="btn btn-primary btn-sm" onClick={() => setAdding(true)} data-tour="add-teacher"><Icon name="plus" size={18} />{t("admin.addTeacher")}</button>} />
       <ul className="grid gap-3 md:grid-cols-2">
         {teachers.map((te) => {
           const cs = data.classSubjects.filter((c) => c.teacher_id === te.id);

@@ -19,7 +19,7 @@ export function AdminDashboard() {
     <>
       <PageHeader title={t("dash.hello", { name: data.me.full_name.split(" ")[0] })} subtitle={`${data.school.name} · ${data.years.find((y) => y.is_current)?.name ?? ""}`}
         action={<Link href="/app/reports" className="btn btn-ghost btn-sm">{t("nav.reports")}</Link>} />
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5" data-tour="school-stats">
         <Stat icon="users" label={t("dash.totalStudents")} value={String(s.students)} />
         <Stat icon="teacher" label={t("dash.totalTeachers")} value={String(s.teachers)} tone="info" />
         <Stat icon="check" label={t("dash.attendanceRate")} value={pct(s.attendance)} hint={t("dash.last30")} />

@@ -119,7 +119,7 @@ function Messages() {
   return (
     <>
       <div className={other ? "hidden lg:block" : ""}>
-        <PageHeader title={t("nav.messages")} action={<button type="button" className="btn btn-primary btn-sm" onClick={() => setPicking(true)}><Icon name="plus" size={18} />{t("comm.newMessage")}</button>} />
+        <PageHeader title={t("nav.messages")} action={<button type="button" className="btn btn-primary btn-sm" onClick={() => setPicking(true)} data-tour="new-message"><Icon name="plus" size={18} />{t("comm.newMessage")}</button>} />
       </div>
       <div className="card grid h-[calc(100dvh-13rem)] min-h-[26rem] overflow-hidden lg:h-[calc(100dvh-12rem)] lg:grid-cols-[20rem_1fr]">
         <aside className={`min-h-0 overflow-y-auto border-line lg:border-r ${other ? "hidden lg:block" : ""}`} aria-label={t("nav.messages")}>
